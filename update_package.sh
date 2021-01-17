@@ -7,19 +7,40 @@ rm -rf ./package/lean/v2ray
 rm -rf ./package/lean/v2ray-plugin
 rm -rf ./package/lean/xray
 rm -rf ./package/lean/luci-theme-opentomcat
-rm -rf ./feeds/packages/net/smartdns
+# echo '替换aria2'
+rm -rf feeds/luci/applications/luci-app-aria2 && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-aria2 feeds/luci/applications/luci-app-aria2
+rm -rf feeds/packages/net/aria2 && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/aria2 feeds/packages/net/aria2
+rm -rf feeds/packages/net/ariang && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/ariang feeds/packages/net/ariang
+# echo '替换transmission'
+rm -rf feeds/luci/applications/luci-app-transmission && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-transmission feeds/luci/applications/luci-app-transmission
+rm -rf feeds/packages/net/transmission && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/transmission feeds/packages/net/transmission
+rm -rf feeds/packages/net/transmission-web-control && \
+svn co https://github.com/sirpdboy/sirpdboy-package/trunk/transmission-web-control feeds/packages/net/transmission-web-control
+# echo 'qBittorrent'
+rm -rf package/lean/luci-app-qbittorrent
+rm -rf package/lean/qt5 #5.1.3
+rm -rf package/lean/qBittorrent #4.2.3
+sed -i 's/+qbittorrent/+qbittorrent +python3/g' ./package/diy/luci-app-qbittorrent/Makefile
+echo '替换smartdns'
+rm -rf ./feeds/packages/net/smartdns&& \
 svn co https://github.com/sirpdboy/sirpdboy-package/trunk/smartdns ./package/diy/smartdns
-rm -rf ./package/lean/luci-app-netdata
+rm -rf ./package/lean/luci-app-netdata && \
 svn co https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-netdata ./package/lean/luci-app-netdata
-rm -rf ./feeds/packages/admin/netdata
+rm -rf ./feeds/packages/admin/netdata && \
 svn co https://github.com/sirpdboy/sirpdboy-package/trunk/netdata ./feeds/packages/admin/netdata
-rm -rf ./feeds/packages/net/mwan3
+rm -rf ./feeds/packages/net/mwan3 && \
 svn co https://github.com/sirpdboy/sirpdboy-package/trunk/mwan3 ./feeds/packages/net/mwan3
-rm -rf ./feeds/packages/net/https-dns-proxy
+#rm -rf ./feeds/packages/net/https-dns-proxy 
+
 #rm -rf ./package/diy/autocore
+#rm -rf ./package/diy/default-settings
 rm -rf ./package/diy/netdata
 rm -rf ./package/diy/mwan3
-#rm -rf ./package/diy/default-settings
 rm -rf ./package/lean/autocore
 rm -rf ./package/lean/default-settings
 #curl -fsSL https://raw.githubusercontent.com/siropboy/other/master/patch/autocore/files/x86/index.htm > package/lean/autocore/files/x86/index.htm
@@ -32,37 +53,48 @@ sed -i 's/Turbo ACC 网络加速/ACC网络加速/g' package/lean/luci-app-flowof
 sed -i 's/Turbo ACC 网络加速/ACC网络加速/g' package/lean/luci-app-sfe/po/zh-cn/sfe.po
 sed -i 's/解锁网易云灰色歌曲/解锁灰色歌曲/g' package/lean/luci-app-unblockmusic/po/zh-cn/unblockmusic.po
 sed -i 's/家庭云//g' package/lean/luci-app-familycloud/luasrc/controller/familycloud.lua
-sed -i 's/invalid/# invalid/g' package/network/services/samba36/files/smb.conf.template
-sed -i 's/$(VERSION_DIST_SANITIZED)/$(shell TZ=UTC-8 date +%Y%m%d)-Ipv6-Mini/g' include/image.mk
 cp -f ./package/diy/banner ./package/base-files/files/etc/
-date1='Ipv6-Mini-S'`TZ=UTC-8 date +%Y.%m.%d -d +"0"days`
-sed -i 's/$(VERSION_DIST_SANITIZED)/$(VERSION_DIST_SANITIZED)-${date1}/g' include/image.mk
-echo "DISTRIB_REVISION='${date1} by Sirpdboy'" > ./package/base-files/files/etc/openwrt_release1
-echo ${date1}' by Sirpdboy ' >> ./package/base-files/files/etc/banner
+date1='ipv6-S'`TZ=UTC-8 date +%Y.%m.%d -d +"0"days`
+sed -i 's/$(VERSION_DIST_SANITIZED)/$(shell TZ=UTC-8 date +%Y%m%d)-ipv6/g' include/image.mk
+echo "DISTRIB_REVISION='${date1} by emmmmmm'" > ./package/base-files/files/etc/openwrt_release1
+echo ${date1}' by emmmmmm ' >> ./package/base-files/files/etc/banner
 echo ' --------------------------------' >> ./package/base-files/files/etc/banner
+sed -i 's/invalid/# invalid/g' package/network/services/samba36/files/smb.conf.template
 sed -i 's/带宽监控/监控/g' feeds/luci/applications/luci-app-nlbwmon/po/zh-cn/nlbwmon.po
 sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' ./package/base-files/files/etc/shadow
-# sed -i  '/filter_/d' package/network/services/dnsmasq/files/dhcp.conf
+#sed -i 's/tables=1/tables=0/g' ./package/kernel/linux/files/sysctl-br-netfilter.conf
 echo  "        option tls_enable 'true'" >> ./package/lean/luci-app-frpc/root/etc/config/frp
+# sed -i '/filter_/d' package/network/services/dnsmasq/files/dhcp.conf
+echo  'CONFIG_BINFMT_MISC=y' >> ./package/target/linux/x86/x64/config-5.4
+echo  'CONFIG_BINFMT_MISC=y' >> ./package/target/linux/x86/config-5.4
+
+#git clone -b master https://github.com/vernesong/OpenClash.git package/OpenClash
 svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/diy/luci-app-openclash
 git clone https://github.com/xiaorouji/openwrt-passwall package/diy1
+#git clone https://github.com/AlexZhuo/luci-app-bandwidthd /package/diy/luci-app-bandwidthd
 #svn co https://github.com/sirpdboy/sirpdboy-package/trunk/AdGuardHome ./package/new/AdGuardHome
 # curl -fsSL https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf >  ./package/new/smartdns/conf/anti-ad-smartdns.conf
 svn co https://github.com/jerrykuku/luci-app-jd-dailybonus/trunk/ ./package/diy/luci-app-jd-dailybonus
 git clone -b master --single-branch https://github.com/tty228/luci-app-serverchan ./package/diy/luci-app-serverchan
+# curl -fsSL  https://raw.githubusercontent.com/siropboy/other/master/patch/etc/serverchan > ./package/diy/luci-app-serverchan/root/etc/config/serverchan
 git clone -b master --single-branch https://github.com/destan19/OpenAppFilter ./package/diy/OpenAppFilter
 # sed -i 's/KERNEL_PATCHVER:=5.4/KERNEL_PATCHVER:=4.19/g' ./target/linux/x86/Makefile
 # sed -i 's/KERNEL_TESTING_PATCHVER:=5.4/KERNEL_TESTING_PATCHVER:=4.19/g' ./target/linux/x86/Makefile
 #sed -i "/mediaurlbase/d" package/*/luci-theme*/root/etc/uci-defaults/*
 #sed -i "/mediaurlbase/d" feed/*/luci-theme*/root/etc/uci-defaults/*
 svn co https://github.com/jerrykuku/luci-app-vssr/trunk/  package/diy/luci-app-vssr
-#  rm -rf ./package/diy1/trojan
-#  rm -rf ./package/diy1/v2ray
-#  rm -rf ./package/diy1/v2ray-plugin
-#  rm -rf ./package/diy1/xray
+# rm -rf ./package/diy1/trojan
+# rm -rf ./package/diy1/v2ray
+# rm -rf ./package/diy1/v2ray-plugin
+# rm -rf ./package/diy1/xray
 #  git clone https://github.com/openwrt-dev/po2lmo.git package/diy/po2lmo
 #  cd package/diy/po2lmo
 #  make && sudo make install
+
+#  rm -rf package/lean/luci-app-dockerman
+#  rm -rf package/lean/luci-lib-docker
+#  rm -rf package/lean/luci-app-diskman
+#  rm -rf package/lean/parted
 rm -rf package/diy/luci-app-dockerman
 rm -rf package/diy/luci-lib-docker
 
